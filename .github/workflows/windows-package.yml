@@ -54,7 +54,7 @@ jobs:
       - name: Build the hook
         env:
           RUSTFLAGS: -C target-feature=+crt-static
-        run: cargo build --release --locked -p codenotch-hook --target-dir target/hook
+        run: cargo build --release --locked -p quotacrt-hook --target-dir target/hook
 
       # The signing key is what the updater in an already-installed copy checks the
       # download against. Asking the bundler for updater artifacts without one is a
@@ -105,19 +105,19 @@ jobs:
       - name: Install, run doctor, uninstall
         run: |
           Start-Process -FilePath .\RetroQuota-Setup.exe -ArgumentList '/S' -Wait
-          $hook = Get-ChildItem $env:LOCALAPPDATA -Filter codenotch-hook.exe -Recurse -Depth 3 -ErrorAction SilentlyContinue |
+          $hook = Get-ChildItem $env:LOCALAPPDATA -Filter quotacrt-hook.exe -Recurse -Depth 3 -ErrorAction SilentlyContinue |
             Select-Object -First 1
-          if (-not $hook) { throw 'the installer did not install codenotch-hook.exe' }
+          if (-not $hook) { throw 'the installer did not install quotacrt-hook.exe' }
           $dir = $hook.DirectoryName
-          foreach ($f in 'codenotch.exe', 'uninstall.exe') {
+          foreach ($f in 'quotacrt.exe', 'uninstall.exe') {
             if (-not (Test-Path (Join-Path $dir $f))) { throw "$f is not beside codenotch-hook.exe in $dir" }
           }
           # The app is a GUI-subsystem exe that attaches to its parent's console,
           # so the report may reach either the redirected stdout or doctor.log.
-          Start-Process -FilePath (Join-Path $dir 'codenotch.exe') -ArgumentList 'doctor' `
+          Start-Process -FilePath (Join-Path $dir 'quotacrt.exe') -ArgumentList 'doctor' `
             -RedirectStandardOutput doctor.txt -Wait
-          $doctor = "$(Get-Content doctor.txt -Raw)$(Get-Content (Join-Path $env:APPDATA 'codenotch\doctor.log') -Raw -ErrorAction SilentlyContinue)"
-          if ($doctor -notmatch 'Codenotch doctor') { throw "codenotch.exe doctor did not run: $doctor" }
+          $doctor = "$(Get-Content doctor.txt -Raw)$(Get-Content (Join-Path $env:APPDATA 'quotacrt\doctor.log') -Raw -ErrorAction SilentlyContinue)"
+          if ($doctor -notmatch 'RetroQuota doctor') { throw "quotacrt.exe doctor did not run: $doctor" }
           $doctor
           Start-Process -FilePath (Join-Path $dir 'uninstall.exe') -ArgumentList '/S' -Wait
 
