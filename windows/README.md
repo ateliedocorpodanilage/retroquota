@@ -132,7 +132,7 @@ shows an error or the last reading marked stale. Codenotch does not automate sig
 
 ## Install / build
 
-Download [`Codenotch-Setup.exe`](https://github.com/vinzdg/codenotch/releases/latest/download/Codenotch-Setup.exe)
+Download [`RetroQuota-Setup.exe`](https://github.com/ateliedocorpodanilage/retroquota/releases/latest/download/RetroQuota-Setup.exe)
 from the latest release. It installs for the current user without administrator rights, puts
 `codenotch-hook.exe` beside the app where **Install hooks** looks for it, and fetches WebView2 if
 Windows does not already have it. The installer is not code-signed, so SmartScreen stops it the

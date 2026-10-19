@@ -2,12 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
 
 jobs:
   test:
-    if: github.repository == 'vinzdg/codenotch'
+    if: github.repository == 'ateliedocorpodanilage/retroquota'
     name: Unit tests
     # macOS 26, because that is what the app targets. An older image ships an
     # Xcode that cannot read the project at all — `objectVersion 77` is a
