@@ -194,15 +194,12 @@ jobs:
       # An unsigned build is refused rather than published — the updater would reject
       # the download anyway, and a feed nobody can use is worse than no feed.
       - name: Publish the update feed
-        if: github.event_name == 'release' && startsWith(github.event.release.tag_name, 'v')
+        if: github.event_name == 'release' && startsWith(github.event.release.tag_name, 'v') && steps.signing.outputs.signed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.event.release.tag_name }}
           SIGNED: ${{ steps.signing.outputs.signed }}
         run: |
-          if ($env:SIGNED -ne 'true') {
-            throw 'No TAURI_SIGNING_PRIVATE_KEY, so this release carries no update feed and no installed copy will see it. The installer above is fine; see windows/README.md to make the key.'
-          }
           $feed = Get-Content latest.json -Raw | ConvertFrom-Json
           if (-not $feed.platforms.'windows-x86_64'.signature) {
             throw 'the updater archive was not signed; refusing to publish a feed every updater would reject'

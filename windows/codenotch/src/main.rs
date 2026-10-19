@@ -200,6 +200,19 @@ fn edge_origin(s: &Screen, edge: &str, ww: i32, wh: i32, ratio: f64) -> (i32, i3
     }
 }
 
+/// Keep a floating notch reachable after a monitor is removed, its taskbar moves, or an older
+/// build saved a position outside the current work area. A small part of the window may be left
+/// at the edge, but its title/drag area must remain clickable.
+fn clamp_floating_origin(s: &Screen, x: i32, y: i32, ww: i32, wh: i32) -> (i32, i32) {
+    let (ax, ay, aw, ah) = s.area();
+    let visible = 28;
+    let min_x = ax - ww + visible;
+    let max_x = ax + aw - visible;
+    let min_y = ay - wh + visible;
+    let max_y = ay + ah - visible;
+    (x.clamp(min_x, max_x), y.clamp(min_y, max_y))
+}
+
 /// The landing whose pill is being kept out of sight, or 0. Numbered so a fallback timer from one
 /// landing can never reveal the next one early.
 static LANDING: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
@@ -366,10 +379,11 @@ pub fn place_notch(app: &AppHandle) {
             c.along(&edge)
         };
         let (x, y) = if placement == "floating" {
-            saved_floating_position.unwrap_or((
+            let (x, y) = saved_floating_position.unwrap_or((
                 (mon.x + (mon.w - ww).max(0) / 2),
                 (mon.y + (mon.h - wh).max(0) / 2),
-            ))
+            ));
+            clamp_floating_origin(&mon, x, y, ww, wh)
         } else {
             edge_origin(&mon, &edge, ww, wh, ratio)
         };
