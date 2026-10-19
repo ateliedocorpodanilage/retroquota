@@ -1,0 +1,7 @@
+{
+  "bundle": {
+    "resources": {
+      "../target/hook/release/quotacrt-hook.exe": "quotacrt-hook.exe"
+    }
+  }
+}

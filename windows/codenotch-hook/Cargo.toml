@@ -1,0 +1,9 @@
+[package]
+name = "quotacrt-hook"
+version = "0.1.0"
+edition = "2021"
+description = "RetroQuota hook launcher: report Claude Code hook events, auto-start the monitor"
+license = "MIT"
+repository = "https://github.com/ateliedocorpodanilage/retroquota"
+
+[dependencies]
